@@ -289,3 +289,110 @@ Akhirnya, tambahkan semua kartu di `HomePage` dengan mengubah bagian `Widget bui
       );
     }
   }
+
+
+### Jawaban untuk Pertanyaan
+
+1. **Tujuan `const` dalam Flutter dan Kapan Menggunakannya**
+
+   Seperti yang telah dijelaskan sebelumnya, `const` digunakan untuk nilai-nilai yang ditentukan pada saat kompilasi dan tidak akan berubah. Nilai ini juga bersifat tidak dapat diubah dan diinisialisasi dengan nilai tetap. Jika sebuah widget dibuat dengan `const`, maka widget tersebut dianggap konstan dan tidak akan dibangun ulang, sehingga meningkatkan performa aplikasi.
+
+   Kapan menggunakan `const`:
+   
+   - Untuk widget dan variabel yang tidak berubah selama siklus hidup aplikasi
+   - Untuk konten statis, seperti label teks, ikon statis, dan struktur tata letak umum yang tidak bergantung pada perubahan variabel atau status
+
+   Kapan tidak menggunakan `const`:
+     
+   - Saat nilai widget atau variabel bersifat dinamis atau bergantung pada data yang diperoleh pada saat runtime, seperti input pengguna
+
+2. **Penjelasan dan Perbandingan Penggunaan `Column` dan `Row` di Flutter dengan Contoh Implementasi**
+
+   `Column` dan `Row` adalah dua jenis widget tata letak di Flutter yang memungkinkan untuk mengatur widget secara vertikal menggunakan `Column` atau secara horizontal menggunakan `Row`.
+
+   `Column`
+   
+   - **Penggunaan**: Mengatur anak-anaknya secara vertikal dalam satu baris
+   - **Contoh**: Digunakan dalam proyek Flutter, pada `productentry_form.dart`
+
+     ```dart
+     ...
+     Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+         Text("Judul"),
+         TextFormField(),
+         SizedBox(height: 10),
+         Text("Deskripsi"),
+         TextFormField(),
+       ],
+     )
+     ```
+
+   `Row`
+     
+   - **Penggunaan**: Mengatur anak-anaknya secara horizontal dalam satu baris
+   - **Contoh**: Digunakan dalam proyek Flutter, pada `main.dart`
+
+     ```dart
+     ...
+     Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          InfoCard(title: 'NPM', content: npm),
+          InfoCard(title: 'Nama', content: name),
+          InfoCard(title: 'Kelas', content: className),
+        ],
+      )
+     ```
+
+   Perbandingan antara `Column` dan `Row` terletak pada opsi penyelarasan. Keduanya menyediakan properti penyelarasan seperti `mainAxisAlignment` (menyelaraskan sepanjang sumbu utama) dan `crossAxisAlignment` (menyelaraskan melintasi atau tegak lurus terhadap sumbu utama).
+
+3. **Daftar Elemen Input yang Digunakan pada Halaman Form dalam Tugas Ini. Apakah Ada Elemen Input Flutter Lain yang Tidak Digunakan dalam Tugas Ini? Jelaskan!**
+
+   Elemen input yang digunakan di `productentry_form.dart` adalah **TextFormField** untuk nama, harga, deskripsi, dan lain-lain. Elemen ini memiliki fitur validasi, hint untuk teks, dan label untuk teks. Tujuannya adalah untuk memberikan berbagai opsi kustomisasi dan tipe input bagi pengguna untuk berinteraksi.
+   Elemen input Flutter lainnya yang tidak digunakan adalah checkbox, radio, dan dropdown.
+
+   Contoh elemen input yang tidak digunakan:
+
+   ```dart
+   Checkbox(
+     value: isSelected,
+     onChanged: (bool? newValue) {
+       setState(() {
+         isSelected = newValue!;
+       });
+     },
+   )
+4. **Bagaimana Cara Mengatur Tema dalam Aplikasi Flutter untuk Memastikan Konsistensi? Apakah Anda Menerapkan Tema dalam Aplikasi Anda?**
+
+Tema diatur dengan menetapkan tema global untuk memastikan konsistensinya. Hal ini berguna untuk mendefinisikan warna dalam proyek. Tema ini diterapkan di main.dart dengan warna utama (primary color) teal dan warna sekunder (secondary color) orange.
+
+dart
+Copy code
+MaterialApp(
+  theme: ThemeData(
+    primarySwatch: Colors.teal,
+    colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.teal)
+        .copyWith(secondary: Colors.orange),
+    scaffoldBackgroundColor: Colors.teal[50],
+    useMaterial3: true,
+  ),
+);
+5. **Bagaimana Cara Mengelola Navigasi dalam Aplikasi Flutter yang Terdiri dari Beberapa Halaman?**
+
+Flutter menangani navigasi dengan menggunakan kelas Navigator. Pada proyek ini, digunakan Navigator.push, Navigator.pushReplacement, dan Navigator.pop. Navigasi ini digunakan di proyek Flutter sebagai berikut. Pada product_card.dart digunakan Navigator.push dan Navigator.pushReplacement. Dalam hal ini, Navigator.push menambahkan halaman baru di atas tumpukan saat ini, memungkinkan pengguna untuk kembali ke halaman sebelumnya. Sementara itu, Navigator.pushReplacement menggantikan halaman saat ini dengan yang baru, menghapus halaman sebelumnya dari tumpukan navigasi.
+
+dart
+Copy code
+// Contoh penggunaan Navigator.push
+Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => ProductEntryFormPage()),
+);
+
+// Contoh penggunaan Navigator.pushReplacement
+Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(builder: (context) => MyHomePage()),
+);

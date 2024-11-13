@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:kambing_ku/widgets/left_drawer.dart';
+import 'package:kambing_ku/widgets/product_card.dart';
+import 'package:kambing_ku/screens/product_entry_form.dart';
 
-class MyHomePage extends StatelessWidget  {
-  MyHomePage({super.key});
+class MyHomePage extends StatelessWidget {
+  final String npm = '2306275821'; // NPM
+  final String name = 'Malvin Muhammad Raqin'; // Name
+  final String className = 'PBP D'; // Class
 
-  final String npm = '2306275821';
-  final String name = 'Malvin Muhammad Raqin';
-  final String className = 'PBP D';
-
+  // Daftar item navigasi pada halaman utama
   final List<ItemHomepage> items = [
-    ItemHomepage("Lihat Daftar Produk", Icons.list),
-    ItemHomepage("Tambah Produk", Icons.add),
-    ItemHomepage("Logout", Icons.logout),
+    ItemHomepage("View Product List", Icons.list, Colors.teal),
+    ItemHomepage("Add Product", Icons.add, Colors.orange),
+    ItemHomepage("Logout", Icons.logout, Colors.red),
   ];
+
+  MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +28,11 @@ class MyHomePage extends StatelessWidget  {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.blue, // Ganti dengan warna yang diinginkan
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
+      drawer: const LeftDrawer(),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -96,81 +103,6 @@ class InfoCard extends StatelessWidget {
             const SizedBox(height: 8.0),
             Text(content),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class ItemHomepage {
-  final String name;
-  final IconData icon;
-
-  ItemHomepage(this.name, this.icon);
-}
-
-class ItemCard extends StatelessWidget {
-  final ItemHomepage item;
-
-  const ItemCard(this.item, {super.key});
-
-  Color getBackgroundColor() {
-    switch (item.name) {
-      case 'Lihat Daftar Produk':
-        return Colors.blue;
-      case 'Tambah Produk':
-        return Colors.green;
-      case 'Logout':
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: getBackgroundColor(),
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: () {
-          String message;
-          if (item.name == "Lihat Daftar Produk") {
-            message = "Kamu telah menekan tombol Lihat Daftar Produk";
-          } else if (item.name == "Tambah Produk") {
-            message = "Kamu telah menekan tombol Tambah Produk";
-          } else if (item.name == "Logout") {
-            message = "Kamu telah menekan tombol Logout";
-          } else {
-            message = "Kamu telah menekan tombol ${item.name}";
-          }
-
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(content: Text(message)),
-            );
-        },
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  item.icon,
-                  color: Colors.white,
-                  size: 30.0,
-                ),
-                const Padding(padding: EdgeInsets.all(3)),
-                Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );
