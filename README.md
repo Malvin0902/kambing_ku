@@ -290,7 +290,7 @@ Akhirnya, tambahkan semua kartu di `HomePage` dengan mengubah bagian `Widget bui
     }
   }
 
-
+## tugas individu 8
 ### Jawaban untuk Pertanyaan
 
 1. **Tujuan `const` dalam Flutter dan Kapan Menggunakannya**

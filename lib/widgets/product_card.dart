@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:kambing_ku/screens/product_entry_form.dart';
-import 'package:kambing_ku/screens/menu.dart';
+import 'package:kambing_ku/screens/list_productentry.dart';
+import 'package:kambing_ku/screens/login.dart';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
 
 class ItemHomepage {
   final String name;
   final IconData icon;
-  final Color color; 
+  final Color color;
 
   ItemHomepage(this.name, this.icon, this.color);
 }
@@ -17,11 +20,12 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Material(
       color: item.color, // Menggunakan warna dari item untuk latar belakang
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        onTap: () {
+        onTap: () async {
           String message = "";
           if (item.name == "View Product List") {
             message = "Anda telah menekan tombol Lihat Daftar Produk";
@@ -30,7 +34,7 @@ class ItemCard extends StatelessWidget {
           } else if (item.name == "Logout") {
             message = "Anda telah menekan tombol Logout";
           }
-          
+
           // Menampilkan pesan dalam Snackbar
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -43,23 +47,37 @@ class ItemCard extends StatelessWidget {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => MyHomePage(),
+                builder: (context) => const KambingEntryPage(),
               ),
             );
           } else if (item.name == "Add Product") {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ProductEntryFormPage(),
+                builder: (context) => const ProductEntryFormPage(),
               ),
             );
           } else if (item.name == "Logout") {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => MyHomePage(),
-              ),
+            final response = await request.logout(
+              'http://localhost:8000/auth/logout/',
             );
+            String message = response["message"];
+            if (context.mounted) {
+              if (response['status']) {
+                String uname = response["username"];
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text("$message Goodbye, $uname."),
+                ));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(message)),
+                );
+              }
+            }
           }
         },
         child: Container(

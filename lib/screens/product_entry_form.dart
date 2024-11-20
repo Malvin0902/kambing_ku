@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kambing_ku/widgets/left_drawer.dart';
+import 'package:kambing_ku/screens/menu.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'dart:convert';
+
+import 'package:provider/provider.dart';
 
 class ProductEntryFormPage extends StatefulWidget {
   const ProductEntryFormPage({super.key});
@@ -41,6 +46,8 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -50,7 +57,7 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -63,213 +70,98 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    hintText: "Enter Product Name",
-                    labelText: "Product Name",
-                    labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
-                    ),
-                  ),
-                  maxLength: 100,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Product name cannot be empty.';
-                    }
-                    if (value.length > 100) {
-                      return 'Product name cannot exceed 100 characters.';
-                    }
-                    return null;
-                  },
-                ),
+              // Nama Produk
+              _buildTextField(
+                context,
+                controller: _nameController,
+                label: "Product Name",
+                hint: "Enter Product Name",
+                maxLength: 100,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Product name cannot be empty.';
+                  }
+                  if (value.length > 100) {
+                    return 'Product name cannot exceed 100 characters.';
+                  }
+                  return null;
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _priceController,
-                  decoration: InputDecoration(
-                    hintText: "Enter Product Price",
-                    labelText: "Product Price",
-                    labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
-                    ),
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Product price cannot be empty.';
-                    }
-                    final price = int.tryParse(value);
-                    if (price == null || price < 0) {
-                      return 'Enter a valid positive integer for price.';
-                    }
-                    return null;
-                  },
-                ),
+              // Harga Produk
+              _buildTextField(
+                context,
+                controller: _priceController,
+                label: "Product Price",
+                hint: "Enter Product Price",
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Product price cannot be empty.';
+                  }
+                  final price = int.tryParse(value);
+                  if (price == null || price < 0) {
+                    return 'Enter a valid positive integer for price.';
+                  }
+                  return null;
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _descriptionController,
-                  decoration: InputDecoration(
-                    hintText: "Enter Product Description",
-                    labelText: "Product Description",
-                    labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
-                    ),
-                  ),
-                  maxLength: 250,
-                  maxLines: 3,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Product description cannot be empty.';
-                    }
-                    return null;
-                  },
-                ),
+              // Deskripsi Produk
+              _buildTextField(
+                context,
+                controller: _descriptionController,
+                label: "Product Description",
+                hint: "Enter Product Description",
+                maxLength: 250,
+                maxLines: 3,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Product description cannot be empty.';
+                  }
+                  return null;
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _categoryController,
-                  decoration: InputDecoration(
-                    hintText: "Enter Product Category",
-                    labelText: "Product Category",
-                    labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
-                    ),
-                  ),
-                  maxLength: 50,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Product category cannot be empty.';
-                    }
-                    if (value.length > 50) {
-                      return 'Product category cannot exceed 50 characters.';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _amountController,
-                  decoration: InputDecoration(
-                    hintText: "Enter Product Amount",
-                    labelText: "Product Amount",
-                    labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
-                    ),
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Product amount cannot be empty.';
-                    }
-                    final amount = int.tryParse(value);
-                    if (amount == null || amount < 0) {
-                      return 'Enter a valid non-negative integer for amount.';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _ratingController,
-                  decoration: InputDecoration(
-                    hintText: "Enter Product Rating",
-                    labelText: "Product Rating",
-                    labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
-                    ),
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Product rating cannot be empty.';
-                    }
-                    final rating = double.tryParse(value);
-                    if (rating == null || rating < 0 || rating > 5) {
-                      return 'Enter a valid rating between 0 and 5.';
-                    }
-                    if (value.contains('.') && value.split('.').last.length > 2) {
-                      return 'Rating can have a maximum of 2 decimal places.';
-                    }
-                    return null;
-                  },
-                ),
-              ),
+              
+              // Tombol Simpan
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                          Theme.of(context).colorScheme.primary),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Product has been successfully saved'),
-                              content: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Name: ${_nameController.text}'),
-                                    Text('Price: ${_priceController.text}'),
-                                    Text('Description: ${_descriptionController.text}'),
-                                    Text('Category: ${_categoryController.text}'),
-                                    Text('Amount: ${_amountController.text}'),
-                                    Text('Rating: ${_ratingController.text}'),
-                                  ],
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  child: const Text('OK'),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    _resetForm();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
+                        final response = await request.postJson(
+                          "http://localhost:8000/create-flutter/",
+                          jsonEncode(<String, String>{
+                            'name': _nameController.text,
+                            'price': _priceController.text,
+                            'description': _descriptionController.text,
+                          }),
                         );
+
+                        if (context.mounted) {
+                          if (response['status'] == 'success') {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Product successfully added!"),
+                              ),
+                            );
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MyHomePage(),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Error occurred. Try again."),
+                              ),
+                            );
+                          }
+                        }
                       }
                     },
                     child: const Text(
@@ -282,6 +174,37 @@ class _ProductEntryFormPageState extends State<ProductEntryFormPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Padding _buildTextField(BuildContext context,
+      {required TextEditingController controller,
+      required String label,
+      required String hint,
+      int? maxLength,
+      int? maxLines,
+      TextInputType keyboardType = TextInputType.text,
+      required String? Function(String?) validator}) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: hint,
+          labelText: label,
+          labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
+          ),
+        ),
+        maxLength: maxLength,
+        maxLines: maxLines ?? 1,
+        keyboardType: keyboardType,
+        validator: validator,
       ),
     );
   }

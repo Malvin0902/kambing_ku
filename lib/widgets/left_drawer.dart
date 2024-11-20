@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kambing_ku/screens/menu.dart';
 import 'package:kambing_ku/screens/product_entry_form.dart';
+import 'package:kambing_ku/screens/list_productentry.dart'; // Ditambahkan untuk daftar produk
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -40,6 +41,7 @@ class LeftDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.home_outlined),
             title: const Text('Home Page'),
+            // Redirection to MyHomePage
             onTap: () {
               Navigator.pushReplacement(
                 context,
@@ -50,8 +52,22 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.list),
+            title: const Text('Product List'),
+            // Redirection to ProductEntryPage
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const KambingEntryPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.add),
             title: const Text('Add Product'),
+            // Redirection to ProductEntryFormPage
             onTap: () {
               Navigator.push(
                 context,
